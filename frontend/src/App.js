@@ -12,7 +12,7 @@ import * as api from './api';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
-import LoginFailurePage from './pages/LoginFailurePage'; // NEW: Import the new page
+import LoginFailurePage from './pages/LoginFailurePage';
 
 /**
  * A wrapper to show a loading spinner while checking auth.
@@ -53,7 +53,7 @@ function AppRoutes() {
 
   // 1. If user is NOT logged in
   if (!auth.user) {
-    // NEW: This logic is updated to allow both /login and /login-failure
+    // This logic allows both /login and /login-failure
     // for unauthenticated users. All other paths redirect to /login.
     return (
       <Routes>
@@ -73,7 +73,7 @@ function AppRoutes() {
     return (
       <Routes>
         <Route path="/profile" element={<ProfilePage setAuth={setAuth} />} />
-        {/* NEW: Redirect all other paths to /profile */}
+        {/* Redirect all other paths to /profile */}
         <Route path="*" element={<Navigate to="/profile" replace />} />
       </Routes>
     );
@@ -94,7 +94,9 @@ function AppRoutes() {
  */
 function App() {
   return (
-    // Remember to REMOVE basename for local development
+    // This is the correct setup for Vercel deployment.
+    // The <BrowserRouter> tag does NOT have a "basename" prop,
+    // which is what we want.
     <BrowserRouter>
       <AppRoutes />
     </BrowserRouter>
