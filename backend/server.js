@@ -65,13 +65,22 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        // === !! REQUIREMENT: @karunya.edu.in domain check !! ===
         const email = profile.emails[0].value;
-        if (!email.endsWith('@karunya.edu.in')) {
+        
+        // --- !! UPDATED DOMAIN CHECK LOGIC !! ---
+        // Check if the email ends with EITHER @karunya.edu.in (student)
+        // OR @karunya.edu (faculty)
+        const isStudent = email.endsWith('@karunya.edu.in');
+        const isFaculty = email.endsWith('@karunya.edu');
+
+        if (!isStudent && !isFaculty) {
+          // If it's neither, reject the login
           return done(null, false, {
-            message: 'Access denied. Only @karunya.edu.in accounts are allowed.',
+            message: 'Access denied. Only @karunya.edu or @karunya.edu.in accounts are allowed.',
           });
         }
+        // --- !! END OF UPDATED LOGIC !! ---
+
 
         // Find or create user
         let user = await User.findOne({ googleId: profile.id });
